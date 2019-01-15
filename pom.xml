@@ -35,6 +35,12 @@
         <version>1.11.3</version>
     </dependency>
     <dependency>
+        <groupId>org.uncommons</groupId>
+        <artifactId>reportng</artifactId>
+        <version>1.1.4</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
         <groupId>com.alibaba</groupId>
         <artifactId>fastjson</artifactId>
         <version>[1.2.31,)</version>

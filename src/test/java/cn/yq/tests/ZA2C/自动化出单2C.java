@@ -3,23 +3,31 @@ package cn.yq.tests.ZA2C;
 
 import cn.yq.base.TestBase;
 import cn.yq.util.*;
+import org.opencv.core.Core;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+import org.opencv.core.Scalar;
+import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
 import org.openqa.selenium.*;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.internal.Locatable;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
-
 import static cn.yq.util.seleniumTools.*;
 
 public class 自动化出单2C extends TestBase {
-    String cityName = "合肥市";        //城市
-    String provinceJC = "黑";        //省份简称
-    String provinceName = "安徽省";  //省份
+    String cityName = "海口市";        //城市
+    String provinceJC = "闽";        //省份简称
+    String provinceName = "海南省";  //省份
     int year = 2018;    //车初登年份
     int month = 6;      //车初登月份
     int day = 12;       //车初登日
@@ -34,6 +42,7 @@ public class 自动化出单2C extends TestBase {
     private String address = getPersonInfo.getRoad(); //随机生成街道地址
     private int thisYear = 2018;    //当前年份，用于后面日期选择
     private String carName = "康迪SMA7001BEV04纯电动轿车  2015款 K17纯电动";
+    private  String orderNum = "";
     TestBase testBase;
     String host;
     String url;
@@ -76,16 +85,16 @@ public class 自动化出单2C extends TestBase {
         sleep(1000);
         driver.findElement(By.xpath("/html/body/article/article[2]/section/section[1]/ul/li[1]")).click();
         //获取省份
-        sleep(500);
+        sleep(1000);
         String pClassName = GetXpath.get2CProvinceClassName(provinceName);
         //System.out.println(pClassName);
-        sleep(500);
+        sleep(1000);
         int height = 200;
         while (!driver.findElement(By.className(pClassName)).isDisplayed()) {
             String js = "var q=document.getElementById('provinceListScroll').scrollTop=" + height;
             executeJS(driver, js);
             height += 100;
-            sleep(400);
+            sleep(1000);
         }
         driver.findElement(By.className(pClassName)).click();
 
@@ -112,14 +121,23 @@ public class 自动化出单2C extends TestBase {
         sleep(1000);
         //System.out.println(url);
         driver.findElement(By.xpath(url)).click();
+        sleep(1000);
+        driver.findElement(By.xpath(GetXpath.getKeyBoardXpath('='))).click();
     }
 
     //输入车牌
     @Test(dependsOnMethods = "case3")
     public void case4() {
-        sleep(2000);
+        sleep(1000);
+        driver.findElement(By.xpath("/html/body/article/article/section[1]/section[1]/section/section[1]/section/section[2]/section/div[2]")).click();
+        sleep(1000);
         //清除文本框中本来的placeholder
-        //driver.findElement(By.xpath("/html/body/article/article/section[1]/section[1]/section/section[1]/section/section[2]/section/div[2]")).clear();
+//        driver.findElement(By.xpath("/html/body/article/article/section[1]/section[1]/section/section[1]/section/section[2]/section/div[2]")).clear();
+        for(int i = 0 ;i<5;i++){
+            sleep(500);
+            driver.findElement(By.xpath(GetXpath.getKeyBoardXpath('-'))).click();
+        }
+        sleep(3000);
         for (int i = 0; i < vehicleNo.length(); i++) {
             sleep(500);
             String url = GetXpath.getKeyBoardXpath(vehicleNo.charAt(i));
@@ -277,7 +295,7 @@ public class 自动化出单2C extends TestBase {
         driver.findElement(By.cssSelector("body > article > article > section:nth-child(9) > section.cm-ht-50.cm-flex.cm-col-c.cm-pd-l-15.cm-bd-b > section > div > i")).click();
         //确定订单
         driver.findElement(By.xpath("/html/body/article/article/section[10]/div[2]")).click();
-        sleep(3000);
+        sleep(10000);
         Assert.assertEquals(false, havePopUp(driver));
     }
 
@@ -308,45 +326,107 @@ public class 自动化出单2C extends TestBase {
 
     @Test(dependsOnMethods = "电子签名前置")
     public void 签名操作()throws AWTException {
-
+            Point locationPoint;
+            Locatable elementLocation;
             System.out.println("走电子投保签名前置流程！");
             sleep(5000);
+            List<Double> point = new LinkedList<Double>();
+            point = getPoint();
             for (int i = 0; i < name.length(); i++) {
                 WebElement canvas = driver.findElement(By.id("signaturePanel"));
-                Point p = canvas.getLocation();
-                int x = p.getX();
-                int y = p.getY();
+                int x = point.get(0).intValue();
+                int y = point.get(1).intValue();
+                System.out.println(x +","+y);
                 System.out.println("-------------0------------");
-                Actions actions = new Actions(driver);
                 //release()表示释放鼠标
                 System.out.println("-------------1------------");
                 System.out.println(canvas.isEnabled());
                 //开始画一条线（前面是起始坐标0.0，后边是终点坐标200.200）
-                sleep(5000);
-
-                  Robot  robot = new Robot();// 创建Robot对象
-
-                robot.mouseMove(x+10, y+10);
+                sleep(1000);
+                Robot  robot = new Robot();// 创建Robot对象
+                robot.mouseMove(x,y);
                 // 按下和释放鼠标左键，选定工程
                 robot.mousePress(KeyEvent.BUTTON1_MASK);
+                sleep(1000);
                 robot.mouseMove(x+30, y+50);
                 robot.mouseRelease(KeyEvent.BUTTON1_MASK);
-
-                new Actions(driver).moveToElement(canvas, 50, 250).clickAndHold().moveByOffset(50, 350).release().build().perform();
-                actions.release();//释放鼠标
                 System.out.println("-------------2------------");
-        //            String jString = "var element_canvas = document.getElementById(\"signaturePanel\");"
-        //                    +"var cxt=element_canvas.getContext(\"2d\");"
-        //                    +"cxt.fillStyle=\"#FF0000\";"
-        //                    +"cxt.fillRect(50,50,50,50);";
-        //            ((JavascriptExecutor)driver).executeScript(jString);
                 sleep(1000);
+                //点击打钩
                 JsClick(driver, By.xpath("/html/body/article/article/article/article/article/section/div[2]/div[2]"));
-
-                System.out.println("-------------3------------");
-                sleep(3000);
-
         }
+        sleep(2000);
+        JsClick(driver,By.xpath("/html/body/article/article/article/article/section[2]"));
+        sleep(1000);
+        //完成
+        JsClick(driver,By.xpath("/html/body/article/article/section[2]/footer/div"));
+        orderNum = driver.findElement(By.xpath("//*[@id=\"payForm\"]/ul[1]/li[1]/a/div[2]/div/strong")).getText();
+        System.out.println("订单号："+orderNum);
     }
 
+
+    @Test(dependsOnMethods = "签名操作")
+    public void pay() {
+        System.out.println("订单号：" + driver.findElement(By.xpath("//*[@id=\"payForm\"]/ul[1]/li[1]/a/div[2]/div/strong")).getText());
+        JsClick(driver,By.xpath("//*[@id=\"payForm\"]/ul[3]/li[3]/div/label/i"));
+        sleep(500);
+        driver.findElement(By.id("payBtn")).click();
+        sleep(2000);
+        //确认付款
+        driver.findElement(By.xpath("//*[@id=\"cashierPreConfirm\"]/div[2]/button")).click();
+        sleep(1000);
+        //输入密码
+        driver.findElement(By.xpath("//*[@id=\"spwd_unencrypt\"]")).sendKeys("543604");
+        sleep(3000);
+        //完成
+        //投保资料上传
+        sleep(2000);
+        driver.findElement(By.xpath("/html/body/article/article/section[1]/section/section/section[2]/section[1]/div/div")).click();
+        sleep(2000);
+        System.out.println(driver.findElement(By.xpath("/html/body/article/article/section/div[1]/section/div[2]/p[1]")).getText());
+        System.out.println(driver.findElement(By.xpath("/html/body/article/article/section/div[1]/section/div[2]/p[2]")).getText());
+    }
+
+
+    public List<Double> getPoint()
+    {
+        List<Double> point = new LinkedList<>();
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+
+        Mat g_tem = Imgcodecs.imread("D:\\a.jpg");
+        Mat g_src = Imgcodecs.imread("D:\\y.jpg");
+
+        int result_rows = g_src.rows() - g_tem.rows() + 1;
+        int result_cols = g_src.cols() - g_tem.cols() + 1;
+        Mat g_result = new Mat(result_rows, result_cols, CvType.CV_32FC1);
+        Imgproc.matchTemplate(g_src, g_tem, g_result, Imgproc.TM_CCORR_NORMED); // 归一化平方差匹配法
+        // Imgproc.matchTemplate(g_src, g_tem, g_result,
+        // Imgproc.TM_CCOEFF_NORMED); // 归一化相关系数匹配法
+
+        // Imgproc.matchTemplate(g_src, g_tem, g_result, Imgproc.TM_CCOEFF);
+        // //
+        // 相关系数匹配法：1表示完美的匹配；-1表示最差的匹配。
+
+        // Imgproc.matchTemplate(g_src, g_tem, g_result, Imgproc.TM_CCORR); //
+        // 相关匹配法
+
+        // Imgproc.matchTemplate(g_src, g_tem, g_result,Imgproc.TM_SQDIFF); //
+        // 平方差匹配法：该方法采用平方差来进行匹配；最好的匹配值为0；匹配越差，匹配值越大。
+
+        // Imgproc.matchTemplate(g_src, g_tem,g_result,Imgproc.TM_CCORR_NORMED);
+        // // 归一化相关匹配法
+        Core.normalize(g_result, g_result, 0, 1, Core.NORM_MINMAX, -1, new Mat());
+        org.opencv.core.Point matchLocation = new org.opencv.core.Point();
+        Core.MinMaxLocResult mmlr = Core.minMaxLoc(g_result);
+
+        matchLocation = mmlr.maxLoc; // 此处使用maxLoc还是minLoc取决于使用的匹配算法
+        point.add(matchLocation.x);
+        point.add(matchLocation.y);
+        Imgproc.rectangle(g_src, matchLocation,
+                new org.opencv.core.Point(matchLocation.x + g_tem.cols(), matchLocation.y + g_tem.rows()),
+                new Scalar(0, 0, 0, 0));
+
+        Imgcodecs.imwrite("D:\\match.jpg", g_src);
+        return point;
+    }
 }

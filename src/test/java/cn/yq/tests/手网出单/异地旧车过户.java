@@ -3,23 +3,34 @@ package cn.yq.tests.手网出单;
 
 import cn.yq.base.TestBase;
 import cn.yq.util.*;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
+import org.opencv.core.Core;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+import org.opencv.core.Scalar;
+import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
+import org.openqa.selenium.*;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.internal.Locatable;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static cn.yq.util.seleniumTools.*;
 
 public class 异地旧车过户 extends TestBase {
-    String cityName = "上海市";        //城市
+    String cityName = "福州市";        //城市
     String provinceJC = "渝";        //省份简称
     int year = 2016;    //车初登年份
     int month = 6;      //车初登月份
@@ -43,8 +54,9 @@ public class 异地旧车过户 extends TestBase {
     @BeforeClass
     public void setUp() throws Exception {
         testBase = new TestBase();
-        host = prop.getProperty("hostTest");
+        host = prop.getProperty("SWUAT");
         url = host + "/open/activity/chezheng/index?business_id=czcx";
+        System.out.println(url);
     }
 
     @Test
@@ -64,33 +76,7 @@ public class 异地旧车过户 extends TestBase {
     //打开且模拟手机
     @Test
     public void case1() {
-        //模拟手机发送请求
-        Map<String, String> mobileEmulation = new HashMap<String, String>();
-        //mobileEmulation.put("deviceName", "iPhone 6/7/8");
-        ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.setExperimentalOption("mobileEmulation", mobileEmulation);
-        //启动最大化
-        chromeOptions.addArguments("--start-maximized");
-        //去除自动控制
-        chromeOptions.addArguments("disable-infobars");
-        //加载默认配置信息
-//        chromeOptions.addArguments("user-data-dir=C:/Users/sx_yeqiang/AppData/Local/Google/Chrome/User Data");
-        //无头浏览器
-        //chromeOptions.addArguments("headless");
-        Map<String, Object> prefs = new HashMap<String, Object>();
-        //禁止图片
-        prefs.put("profile.managed_default_content_settings.images", 1);
-        //禁止Css
-        prefs.put("profile.managed_default_content_settings.css", 2); // 2就是代表禁止加载的意思
-        chromeOptions.setExperimentalOption("prefs", prefs);
-        driver = new ChromeDriver(chromeOptions);
-        System.setProperty("webdriver.firefox.bin", "C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe");
-        System.setProperty("webdriver.gecko.driver", "C:\\Program Files (x86)\\Mozilla Firefox\\geckodriver.exe");
-        //设置隐性等待时间
-//        FirefoxBinary firefoxBinary = new FirefoxBinary();
-//        firefoxBinary.addCommandLineOptions("--headless");
-//        driver = new FirefoxDriver();
-        driver.manage().window().maximize();
+        driver = ChromeDriver();
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         driver.get(url);
     }
@@ -99,6 +85,7 @@ public class 异地旧车过户 extends TestBase {
     @Test(dependsOnMethods = "case1")
     public void case2() {
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        toBotton(driver);
         //1.点击请选择投保城市
         driver.findElement(By.xpath("/html/body/article/article/div[1]/section[1]/section[3]/div[2]/i")).click();
         //2.输入城市名
@@ -261,6 +248,7 @@ public class 异地旧车过户 extends TestBase {
         //收件人地址
         sleep(1000);
         //拖动滚动条到最底部
+        toBotton(driver);
         driver.findElement(By.xpath("/html/body/article/article/section[8]/section[1]/section[3]/div[2]/div[1]")).click();
         sleep(1000);
         driver.findElement(By.xpath("/html/body/article/article/article[2]/section/header/span[1]")).click();
@@ -275,7 +263,72 @@ public class 异地旧车过户 extends TestBase {
         Assert.assertEquals(false, havePopUp(driver));
     }
 
+
     @Test(dependsOnMethods = "case12")
+    public void 电子签名前置() {
+        try {
+            Robot robot = new Robot();
+            robot.keyPress(KeyEvent.VK_SHIFT);
+            robot.keyPress(KeyEvent.VK_CONTROL);
+            robot.keyPress(KeyEvent.VK_I);
+            Thread.sleep(1000);
+            robot.keyRelease(KeyEvent.VK_I);
+            robot.keyPress(KeyEvent.VK_M);
+            Thread.sleep(1000);
+            robot.keyRelease(KeyEvent.VK_CONTROL);
+            robot.keyRelease(KeyEvent.VK_SHIFT);
+            robot.keyRelease(KeyEvent.VK_M);
+            Thread.sleep(1000);
+            driver.navigate().refresh();
+            ((JavascriptExecutor) driver).executeScript("window.scrollTo(0, document.body.scrollHeight)");
+            Thread.sleep(5000);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //确认上述内容，签字
+        JsClick(driver, By.xpath("/html/body/article/article/footer/div"));
+    }
+
+    @Test(dependsOnMethods = "电子签名前置")
+    public void 签名操作()throws AWTException ,Exception{
+        System.out.println("走电子投保签名前置流程！");
+        sleep(5000);
+        java.util.List<Double> point = new LinkedList<Double>();
+        String address = "D:";
+        CaptureScreen.captureScreen(address,"source.jpg");
+        sleep(1000);
+        point = getPoint();
+        for (int i = 0; i < name.length(); i++) {
+            int x = point.get(0).intValue();
+            int y = point.get(1).intValue();
+            System.out.println(x +","+y);
+            System.out.println("-------------0------------");
+            //release()表示释放鼠标
+            System.out.println("-------------1------------");
+            //开始画一条线（前面是起始坐标0.0，后边是终点坐标200.200）
+            sleep(1000);
+            Robot  robot = new Robot();// 创建Robot对象
+            robot.mouseMove(x,y);
+            // 按下和释放鼠标左键，选定工程
+            robot.mousePress(KeyEvent.BUTTON1_MASK);
+            sleep(1000);
+            robot.mouseMove(x+30, y+50);
+            robot.mouseRelease(KeyEvent.BUTTON1_MASK);
+            System.out.println("-------------2------------");
+            sleep(1000);
+            //点击打钩
+            JsClick(driver, By.xpath("/html/body/article/article/article/article/article/section/div/button[2]"));
+        }
+        sleep(2000);
+        JsClick(driver,By.xpath("/html/body/article/article/article/article/section[2]/button"));
+        sleep(2000);
+        //完成
+        String orderNum = driver.findElement(By.xpath("//*[@id=\"payForm\"]/ul[1]/li[1]/a/div[2]/div/strong")).getText();
+        System.out.println("订单号："+orderNum);
+    }
+
+
+    @Test(dependsOnMethods = "签名操作")
     public void pay() {
         System.out.println("订单号：" + driver.findElement(By.xpath("//*[@id=\"payForm\"]/ul[1]/li[1]/a/div[2]/div/strong")).getText());
         driver.findElement(By.xpath("//*[@id=\"payForm\"]/ul[3]/li[3]/div/label/i")).click();
@@ -296,30 +349,30 @@ public class 异地旧车过户 extends TestBase {
         System.out.println(driver.findElement(By.xpath("/html/body/article/article/section/div[1]/section/div[2]/p[2]")).getText());
     }
 
+    public List<Double> getPoint()
+    {
+        List<Double> point = new LinkedList<>();
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
-//    @Test(dependsOnMethods = "case12")
-//    public void 电子签名前置(){
-//        try {
-//            Robot robot = new Robot();
-//            robot.keyPress(KeyEvent.VK_SHIFT);
-//            robot.keyPress(KeyEvent.VK_CONTROL);
-//            robot.keyPress(KeyEvent.VK_I);
-//            Thread.sleep(1000);
-//            robot.keyRelease(KeyEvent.VK_I);;
-//            robot.keyPress(KeyEvent.VK_M);
-//            robot.keyRelease(KeyEvent.VK_CONTROL);
-//            robot.keyRelease(KeyEvent.VK_SHIFT);
-//            robot.keyRelease(KeyEvent.VK_M);
-//            Thread.sleep(10000);
-//            ((JavascriptExecutor) driver).executeScript("window.scrollTo(0, document.body.scrollHeight)");
-//            //确认上述内容，签字
-//            Thread.sleep(3000);
-//        } catch (Exception e){
-//            e.printStackTrace();
-//        }
-//
-//        driver.findElement(By.xpath("/html/body/article/article/footer/div")).click();
-//    }
+        Mat g_tem = Imgcodecs.imread("C:\\Users\\sx_yeqiang\\Downloads\\AutoFramework\\screenshot\\target.jpg");
+        Mat g_src = Imgcodecs.imread("C:\\Users\\sx_yeqiang\\Downloads\\AutoFramework\\screenshot\\source.jpg");
 
+        int result_rows = g_src.rows() - g_tem.rows() + 1;
+        int result_cols = g_src.cols() - g_tem.cols() + 1;
+        Mat g_result = new Mat(result_rows, result_cols, CvType.CV_32FC1);
+        Imgproc.matchTemplate(g_src, g_tem, g_result, Imgproc.TM_CCORR_NORMED); // 归一化平方差匹配法
+        Core.normalize(g_result, g_result, 0, 1, Core.NORM_MINMAX, -1, new Mat());
+        org.opencv.core.Point matchLocation = new org.opencv.core.Point();
+        Core.MinMaxLocResult mmlr = Core.minMaxLoc(g_result);
 
+        matchLocation = mmlr.maxLoc; // 此处使用maxLoc还是minLoc取决于使用的匹配算法
+        point.add(matchLocation.x);
+        point.add(matchLocation.y);
+        Imgproc.rectangle(g_src, matchLocation,
+                new org.opencv.core.Point(matchLocation.x + g_tem.cols(), matchLocation.y + g_tem.rows()),
+                new Scalar(0, 0, 0, 0));
+
+        Imgcodecs.imwrite("C:\\Users\\sx_yeqiang\\Downloads\\AutoFramework\\screenshot\\match.jpg", g_src);
+        return point;
+    }
 }

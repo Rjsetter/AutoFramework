@@ -1,10 +1,17 @@
 package cn.yq.util;
 
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
+import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
-
+import org.openqa.selenium.Dimension;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -111,7 +118,11 @@ public class seleniumTools {
         chromeOptions.setExperimentalOption("mobileEmulation", mobileEmulation);
         chromeOptions.addArguments("--start-maximized");
         //无头浏览器
-        //chromeOptions.addArguments("headless");
+//        chromeOptions.addArguments("headless");
+        //去除自动控制
+        chromeOptions.addArguments("disable-infobars");
+        //加载默认配置信息
+//        chromeOptions.addArguments("user-data-dir=C:/Users/sx_yeqiang/AppData/Local/Google/Chrome/User Data");
         driver = new ChromeDriver(chromeOptions);
         return driver;
     }
@@ -130,12 +141,29 @@ public class seleniumTools {
         return driver;
     }
 
+    /**
+     *
+     * @param driver
+     * @param name  截图的名字
+     */
+    public static void ScreenShot(WebDriver driver,String name){
+        //截图到output
+        File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+        try {
+            String savePath = "C:\\Users\\sx_yeqiang\\Downloads\\AutoFramework\\screenshot\\"+name +".png";
+            //复制内容到指定文件中
+            FileUtils.copyFile(scrFile, new File(savePath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    
     private void injectjQueryIfNeeded(WebDriver driver) {
         if(!jQueryLoaded(driver))
             injectjQuery(driver);
     }
 
-    WebDriver driver = new ChromeDriver();
 
     // 判断是已加载jQuery
     public Boolean jQueryLoaded(WebDriver driver) {
@@ -158,7 +186,6 @@ public class seleniumTools {
                 + "newScript.type = 'text/javascript';" + "newScript.src = "
                 + "'http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js';"
                 + "headID.appendChild(newScript);");
-
     }
 }
 

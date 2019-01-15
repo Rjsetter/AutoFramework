@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class openCvMatch {
     public static void main(String[] args) {
-        
+
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
         Mat g_tem = Imgcodecs.imread("D:\\a.jpg");
