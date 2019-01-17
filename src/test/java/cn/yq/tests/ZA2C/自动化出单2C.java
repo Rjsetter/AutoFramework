@@ -11,7 +11,6 @@ import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.openqa.selenium.*;
 import org.openqa.selenium.Point;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.internal.Locatable;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -22,6 +21,7 @@ import java.awt.event.KeyEvent;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
 import static cn.yq.util.seleniumTools.*;
 
 public class 自动化出单2C extends TestBase {
@@ -390,7 +390,7 @@ public class 自动化出单2C extends TestBase {
 
     public List<Double> getPoint()
     {
-        List<Double> point = new LinkedList<>();
+        List<Double> point = new LinkedList<Double>();
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
         Mat g_tem = Imgcodecs.imread("D:\\a.jpg");

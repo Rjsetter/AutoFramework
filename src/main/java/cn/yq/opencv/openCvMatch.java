@@ -1,13 +1,8 @@
 package cn.yq.opencv;
 
-import org.opencv.calib3d.Calib3d;
 import org.opencv.core.*;
-import org.opencv.features2d.*;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
-
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Created by niwei on 2017/4/28.

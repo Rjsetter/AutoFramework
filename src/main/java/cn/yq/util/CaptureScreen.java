@@ -1,13 +1,9 @@
 package cn.yq.util;
-import java.awt.Desktop;
-import java.awt.Dimension;
-import java.awt.Rectangle;
-import java.awt.Robot;
-import java.awt.Toolkit;
-import java.awt.image.BufferedImage;
-import java.io.File;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 public class CaptureScreen {
 
     public static void captureScreen(String fileAddress, String fileName) throws Exception {

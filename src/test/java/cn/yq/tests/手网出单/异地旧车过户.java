@@ -9,22 +9,18 @@ import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
-import org.openqa.selenium.*;
-import org.openqa.selenium.Point;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.internal.Locatable;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static cn.yq.util.seleniumTools.*;
@@ -351,7 +347,7 @@ public class 异地旧车过户 extends TestBase {
 
     public List<Double> getPoint()
     {
-        List<Double> point = new LinkedList<>();
+        List<Double> point = new LinkedList<Double>();
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
         Mat g_tem = Imgcodecs.imread("C:\\Users\\sx_yeqiang\\Downloads\\AutoFramework\\screenshot\\target.jpg");

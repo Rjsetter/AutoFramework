@@ -2,7 +2,6 @@ package cn.yq.tests.Method;
 
 
 import cn.yq.base.TestBase;
-
 import cn.yq.restClient.RestClient;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
