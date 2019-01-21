@@ -112,13 +112,13 @@ public class seleniumTools {
         //mobileEmulation.put("deviceName", "iPhone 6/7/8");
         ChromeOptions chromeOptions = new ChromeOptions();
         chromeOptions.setExperimentalOption("mobileEmulation", mobileEmulation);
-        chromeOptions.addArguments("--start-maximized");
+         chromeOptions.addArguments("--start-maximized");
         //无头浏览器
 //        chromeOptions.addArguments("headless");
         //去除自动控制
         chromeOptions.addArguments("disable-infobars");
         //加载默认配置信息
-//        chromeOptions.addArguments("user-data-dir=C:/Users/sx_yeqiang/AppData/Local/Google/Chrome/User Data");
+        chromeOptions.addArguments("user-data-dir=C:/Users/sx_yeqiang/AppData/Local/Google/Chrome/User Data");
         driver = new ChromeDriver(chromeOptions);
         return driver;
     }

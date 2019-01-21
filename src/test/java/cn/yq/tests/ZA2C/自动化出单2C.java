@@ -25,9 +25,9 @@ import java.util.concurrent.TimeUnit;
 import static cn.yq.util.seleniumTools.*;
 
 public class 自动化出单2C extends TestBase {
-    String cityName = "海口市";        //城市
-    String provinceJC = "闽";        //省份简称
-    String provinceName = "海南省";  //省份
+    String cityName = "厦门市";        //城市
+    String provinceJC = "新";        //省份简称
+    String provinceName = "福建省";  //省份
     int year = 2018;    //车初登年份
     int month = 6;      //车初登月份
     int day = 12;       //车初登日

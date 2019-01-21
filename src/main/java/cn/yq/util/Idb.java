@@ -24,7 +24,7 @@ public class Idb {
         CloseableHttpResponse closeableHttpResponse;
         RestClient restClient = new RestClient();
         String Url = "http://idb.zhonganonline.com/getqueryrst";
-        String Cookie = "IDB_BETA_UID=D%0AAwMTE5MDk%3DM-%3D1547718100-%3D3cfe48b04f1128d22e1f2ae30272c38d";
+        String Cookie = "IDB_BETA_UID=D%0AAwMTE5MDk%3DM-%3D1548124897-%3D130e0594e2f801a16d47ffb586cd4a14";
         String splitcol = "-1";
         String splitcolmode = "=";
         String selectmod = "1";
@@ -42,15 +42,12 @@ public class Idb {
         System.out.println(idb2Json);
         int statusCode = closeableHttpResponse.getStatusLine().getStatusCode();
         JSONObject responseJson = restClient.getResponseJson(closeableHttpResponse);
-//        String responseString = EntityUtils.toString(closeableHttpResponse.getEntity());
         String s = TestUtil.getValueByJPath(responseJson, "");
-//        JSONArray json = JSONArray.parseArray(responseString);
-//        JSONObject responseJson = JSON.parseObject(responseString);
         System.out.println( "-->" + s);
     }
     public static void main(String[] args){
         try {
-            idb("tst","nereus","nereus_message_sent","receiver_no ='13355555555'");
+            idb("tst","nereus","nereus_message_sent","receiver_no ='17721295133'");
         }catch (IOException e){
             System.out.print(e.getMessage());
         }

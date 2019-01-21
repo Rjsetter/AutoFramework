@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="web" url="file://D:/za-castle-lancer/branch/20190107_105311_1" />
+  </component>
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="D:/za-castle-lancer/branch/20190107_105311_1/pom.xml___jb_old___" />
+        <option value="D:/za-castle-lancer/branch/20190107_105311_1/pom.xml___jb_tmp___" />
       </list>
     </option>
   </component>

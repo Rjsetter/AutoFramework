@@ -13,6 +13,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -26,8 +28,8 @@ import java.util.concurrent.TimeUnit;
 import static cn.yq.util.seleniumTools.*;
 
 public class 异地旧车过户 extends TestBase {
-    String cityName = "福州市";        //城市
-    String provinceJC = "渝";        //省份简称
+    String cityName = "重庆市";        //城市
+    String provinceJC = "闽";        //省份简称
     int year = 2016;    //车初登年份
     int month = 6;      //车初登月份
     int day = 12;       //车初登日
@@ -71,15 +73,15 @@ public class 异地旧车过户 extends TestBase {
 
     //打开且模拟手机
     @Test
-    public void case1() {
+    public void 打开网址() {
         driver = ChromeDriver();
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         driver.get(url);
     }
 
     //选择城市
-    @Test(dependsOnMethods = "case1")
-    public void case2() {
+    @Test(dependsOnMethods = "打开网址")
+    public void 选择城市() {
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         toBotton(driver);
         //1.点击请选择投保城市
@@ -91,8 +93,8 @@ public class 异地旧车过户 extends TestBase {
     }
 
     //选择省份简称
-    @Test(dependsOnMethods = "case2")
-    public void case3() {
+    @Test(dependsOnMethods = "选择城市")
+    public void 省份简称() {
         sleep(3000);
         driver.findElement(By.xpath("/html/body/article/article/div[1]/section[1]/section[4]/div[2]/i")).click();
         //返回简称xpath的地址
@@ -102,22 +104,21 @@ public class 异地旧车过户 extends TestBase {
         driver.findElement(By.xpath(url)).click();
     }
 
-    //输入车牌
-    @Test(dependsOnMethods = "case3")
-    public void case4() {
+    @Test(dependsOnMethods = "省份简称")
+    public void 输入车牌() {
         driver.findElement(By.name("licenseNo")).sendKeys(vehicleNo);
     }
 
     //点击立即报价按钮
-    @Test(dependsOnMethods = "case4")
-    public void case5() {
+    @Test(dependsOnMethods = "输入车牌")
+    public void 报价按钮() {
         sleep(1000);
         driver.findElement(By.xpath("/html/body/article/article/div[1]/section[2]/button")).click();
     }
 
     //异地投保
-    @Test(dependsOnMethods = "case4")
-    public void ydtb() {
+    @Test(dependsOnMethods = "报价按钮")
+    public void 异地投保() {
         sleep(1000);
         if (havePopUp(driver)) {
             driver.findElement(By.xpath("/html/body/article/article[2]/section/section[2]/div[2]")).click();
@@ -125,17 +126,18 @@ public class 异地旧车过户 extends TestBase {
     }
 
     //输入车架号和发动机号
-    @Test(dependsOnMethods = "ydtb")
-    public void case6() {
-        toBotton(driver);
-        sleep(1000);
+    @Test(dependsOnMethods = "异地投保")
+    public void 输入车架和发动机号() {
+        sleep(3000);
+        new WebDriverWait(driver,10).until(ExpectedConditions.presenceOfElementLocated(By.name("vehicleFrameNo")));
         driver.findElement(By.name("vehicleFrameNo")).sendKeys(vinNo); //输入车架号
+        new WebDriverWait(driver,10).until(ExpectedConditions.presenceOfElementLocated(By.name("vehicleEngineNo")));
         driver.findElement(By.name("vehicleEngineNo")).sendKeys(engineNo);//输入车牌号
     }
 
     //选择日期
-    @Test(dependsOnMethods = "case6")
-    public void case7() {
+    @Test(dependsOnMethods = "输入车架和发动机号")
+    public void 选择日期() {
         sleep(1000);
         driver.findElement(By.xpath("/html/body/article/article/section[3]/section[4]/div[2]")).click();//点击初登日期请选择
         //判断年份是否为今年,且年份还须小于今年
@@ -160,8 +162,8 @@ public class 异地旧车过户 extends TestBase {
     }
 
     //输入个人信息
-    @Test(dependsOnMethods = "case7")
-    public void case8() {
+    @Test(dependsOnMethods = "选择日期")
+    public void 个人信息() {
         sleep(1000);
         driver.findElement(By.xpath("/html/body/article/article/section[4]/section[4]/div[2]/input")).sendKeys(IDCard);
         sleep(1000);
@@ -170,8 +172,8 @@ public class 异地旧车过户 extends TestBase {
     }
 
     //过户车
-    @Test(dependsOnMethods = "case8")
-    public void guohuche() {
+    @Test(dependsOnMethods = "个人信息")
+    public void 过户车() {
         toBotton(driver);
         driver.findElement(By.xpath("/html/body/article/article/section[5]/section[6]/section/div/i")).click();
         sleep(400);
@@ -183,8 +185,8 @@ public class 异地旧车过户 extends TestBase {
     }
 
     //选择车辆
-    @Test(dependsOnMethods = "guohuche")
-    public void case9() {
+    @Test(dependsOnMethods = "过户车")
+    public void 选择车辆() {
         //点击选择框
         driver.findElement(By.xpath("/html/body/article/article/section[6]/div")).click();
         sleep(1000);
@@ -206,8 +208,8 @@ public class 异地旧车过户 extends TestBase {
     }
 
     //短信验证并进行报价
-    @Test(dependsOnMethods = "case9")
-    public void case10() {
+    @Test(dependsOnMethods = "选择车辆")
+    public void 短信验证() {
         //短信验证
         driver.findElement(By.xpath("/html/body/article/article[2]/section/section[2]/div[3]")).click();
         sleep(1000);
@@ -218,8 +220,8 @@ public class 异地旧车过户 extends TestBase {
     }
 
     //投保方案确认
-    @Test(dependsOnMethods = "case10")
-    public void case11() {
+    @Test(dependsOnMethods = "短信验证")
+    public void 投保方案确认() {
         //判断是否会有把报错
         sleep(5000);
         if (isElementPresent(driver, By.xpath("/html/body/article/article[2]/section/section[1]"))) {
@@ -227,7 +229,7 @@ public class 异地旧车过户 extends TestBase {
             //点击确认按钮
             driver.findElement(By.xpath("/html/body/article/article[2]/section/section[2]")).click();
         }
-        sleep(1000);
+        sleep(2000);
         //确认报价按钮
         driver.findElement(By.xpath("/html/body/article/article/footer/div[3]")).click();
         sleep(1000);
@@ -236,8 +238,8 @@ public class 异地旧车过户 extends TestBase {
     }
 
     //确认订单信息
-    @Test(dependsOnMethods = "case11")
-    public void case12() {
+    @Test(dependsOnMethods = "投保方案确认")
+    public void 确认订单() {
         toBotton(driver);
         //邮箱
         driver.findElement(By.name("ownerEmail")).sendKeys(email);
@@ -260,7 +262,7 @@ public class 异地旧车过户 extends TestBase {
     }
 
 
-    @Test(dependsOnMethods = "case12")
+    @Test(dependsOnMethods = "确认订单",enabled = false)
     public void 电子签名前置() {
         try {
             Robot robot = new Robot();
@@ -285,7 +287,7 @@ public class 异地旧车过户 extends TestBase {
         JsClick(driver, By.xpath("/html/body/article/article/footer/div"));
     }
 
-    @Test(dependsOnMethods = "电子签名前置")
+    @Test(dependsOnMethods = "电子签名前置",enabled = false)
     public void 签名操作()throws AWTException ,Exception{
         System.out.println("走电子投保签名前置流程！");
         sleep(5000);
@@ -324,8 +326,8 @@ public class 异地旧车过户 extends TestBase {
     }
 
 
-    @Test(dependsOnMethods = "签名操作")
-    public void pay() {
+    @Test(dependsOnMethods = "确认订单")
+    public void 支付操作() {
         System.out.println("订单号：" + driver.findElement(By.xpath("//*[@id=\"payForm\"]/ul[1]/li[1]/a/div[2]/div/strong")).getText());
         driver.findElement(By.xpath("//*[@id=\"payForm\"]/ul[3]/li[3]/div/label/i")).click();
         driver.findElement(By.id("payBtn")).click();

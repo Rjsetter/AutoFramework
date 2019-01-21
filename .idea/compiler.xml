@@ -8,6 +8,8 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="AutoFramework" />
+        <module name="za-castle-lancer (1)" />
+        <module name="za-castle-lancer (2)" />
       </profile>
     </annotationProcessing>
   </component>
