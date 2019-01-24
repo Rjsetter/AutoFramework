@@ -18,7 +18,7 @@ public class 隐式等待 {
         //隐式等待5秒
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         //这个是在页面上定位不到的元素
-        driver.findElement(By.xpath("//*[@id=\"su\"]/li"));
+        driver.findElement(By.xpath("//*[@id=\"su\"]"));
         //getTitle()获取当前页面的title，用System.out.println()打印在控制台
         System.out.println("当前打开页面的标题是： "+ driver.getTitle());
     }

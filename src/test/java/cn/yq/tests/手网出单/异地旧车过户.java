@@ -30,8 +30,8 @@ import static cn.yq.util.seleniumTools.*;
 public class 异地旧车过户 extends TestBase {
     String cityName = "重庆市";        //城市
     String provinceJC = "闽";        //省份简称
-    int year = 2016;    //车初登年份
-    int month = 6;      //车初登月份
+    int year = 2015;    //车初登年份
+    int month = 5;      //车初登月份
     int day = 12;       //车初登日
     private static WebDriver driver;  //浏览器头
     private String vehicleNo = getEngineNumber.getEngineNo(6); //生成随机车牌
@@ -262,7 +262,7 @@ public class 异地旧车过户 extends TestBase {
     }
 
 
-    @Test(dependsOnMethods = "确认订单",enabled = false)
+    @Test(dependsOnMethods = "支付操作",enabled = false)
     public void 电子签名前置() {
         try {
             Robot robot = new Robot();
@@ -324,7 +324,21 @@ public class 异地旧车过户 extends TestBase {
         String orderNum = driver.findElement(By.xpath("//*[@id=\"payForm\"]/ul[1]/li[1]/a/div[2]/div/strong")).getText();
         System.out.println("订单号："+orderNum);
     }
-
+//    public function testDraw() {
+//        try {
+//            $this->execute(array('script' => "  " +
+//                            "var c = document.getElementById('canvas');
+//                    var ctx = c.getContext('2d');
+//            ctx.beginPath();
+//            ctx.arc(100, 75, 50, 0, 2 * Math.PI);
+//            ctx.stroke();",
+//            'args' => array()));
+//
+//            echo 'done';
+//            sleep(10);
+//        } catch (Exception $ex) {
+//            echo 'not done';
+//        }
 
     @Test(dependsOnMethods = "确认订单")
     public void 支付操作() {

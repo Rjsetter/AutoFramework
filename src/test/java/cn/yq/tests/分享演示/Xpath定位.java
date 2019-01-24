@@ -18,5 +18,6 @@ public class Xpath定位 {
         //用xpath定位
         String text = driver.findElement(By.xpath("//div[@class='bot-right']/ol/li[1]")).getText();
         System.out.println(text);
+        //*[@id="pane-news"]/div/ul/li[1]/strong/a
     }
 }

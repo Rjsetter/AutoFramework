@@ -5,6 +5,8 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
 import java.io.IOException;
@@ -118,7 +120,8 @@ public class seleniumTools {
         //去除自动控制
         chromeOptions.addArguments("disable-infobars");
         //加载默认配置信息
-        chromeOptions.addArguments("user-data-dir=C:/Users/sx_yeqiang/AppData/Local/Google/Chrome/User Data");
+
+//        chromeOptions.addArguments("user-data-dir=C:/Users/sx_yeqiang/AppData/Local/Google/Chrome/User Data");
         driver = new ChromeDriver(chromeOptions);
         return driver;
     }
@@ -182,6 +185,24 @@ public class seleniumTools {
                 + "newScript.type = 'text/javascript';" + "newScript.src = "
                 + "'http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js';"
                 + "headID.appendChild(newScript);");
+    }
+
+    /**
+     * 显示等待，判断页面是否已经包含某元素，time为设置的等待的时间
+     * @param driver
+     * @param time
+     * @param by
+     * @return
+     */
+    public boolean DisplayWait(WebDriver driver, int time,By by){
+        try{
+            (new WebDriverWait(driver,time))
+                    .until(ExpectedConditions.presenceOfElementLocated(by));
+        }catch(TimeoutException e){
+            System.out.println("DisplayWait：加载元素超时或者页面没有该元素！");
+            return false;
+        }
+        return true;
     }
 }
 

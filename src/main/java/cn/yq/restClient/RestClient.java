@@ -2,18 +2,21 @@ package cn.yq.restClient;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.http.NameValuePair;
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.UnsupportedEncodingException;
+import java.util.*;
 
 public class RestClient {
 
@@ -164,4 +167,37 @@ public class RestClient {
         Log.info("返回响应内容的JSON格式");
         return responseJson;
     }
+
+    /**
+     * 设置post接口上传表单
+     *
+     *
+     *            post请求
+     * @param apiCase
+     *            传入的参数map
+     */
+    public CloseableHttpResponse setFormHttpEntity( String url,Map<String, String> apiCase) throws ClientProtocolException,IOException{
+        //创建一个可关闭的HttpClient对象
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        //创建一个HttpPost的请求对象
+        HttpPost httppost = new HttpPost(url);
+        Set<String> keys = apiCase.keySet();
+        List<NameValuePair> formparams = new ArrayList<NameValuePair>();
+        for (String key : keys) {
+            formparams.add(new BasicNameValuePair(key, apiCase.get(key)));
+        }
+        UrlEncodedFormEntity entity = null;
+        try {
+            entity = new UrlEncodedFormEntity(formparams, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            System.out.println("form表单错误！");
+            e.printStackTrace();
+        }
+        httppost.setEntity(entity);
+        //发送post请求
+        CloseableHttpResponse httpResponse = httpclient.execute(httppost);
+//        Log.info("开始发送post请求");
+        return httpResponse;
+    }
+
 }

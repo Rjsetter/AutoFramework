@@ -18,7 +18,7 @@ public class 显示等待 {
 
         driver.get("https://www.baidu.com");
         //隐式等待5秒
-        new WebDriverWait(driver,10).until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"su\"]/li")));
+        new WebDriverWait(driver,10).until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"su\"]")));
         //getTitle()获取当前页面的title，用System.out.println()打印在控制台
         System.out.println("当前打开页面的标题是： "+ driver.getTitle());
     }
