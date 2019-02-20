@@ -14,7 +14,7 @@ public class 智联招聘 {
     public static void main(String [] args)throws IOException {
         String urlHead = "https://fe-api.zhaopin.com/c/i/sou?pageSize=100&cityId=540&workExperience=-1&education=-1&companyType=-1&employmentType=-1&jobWelfareTag=-1&kw=";
         String urlEnd = "&kt=3&_v=0.28509217&x-zp-page-request-id=243679014cb34a5a97b9ff0df91f1bb9-1547654268684-816387";
-        String keyWord = "java";
+        String keyWord = "mysql";
         String url = urlHead+keyWord+urlEnd;
         restClient = new RestClient();
         closeableHttpResponse = restClient.get(url);

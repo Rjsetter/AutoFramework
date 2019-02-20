@@ -3,12 +3,6 @@ package cn.yq.tests.ZA2C;
 
 import cn.yq.base.TestBase;
 import cn.yq.util.*;
-import org.opencv.core.Core;
-import org.opencv.core.CvType;
-import org.opencv.core.Mat;
-import org.opencv.core.Scalar;
-import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.imgproc.Imgproc;
 import org.openqa.selenium.*;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.internal.Locatable;
@@ -391,15 +385,6 @@ public class 自动化出单2C extends TestBase {
     public List<Double> getPoint()
     {
         List<Double> point = new LinkedList<Double>();
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-
-        Mat g_tem = Imgcodecs.imread("D:\\a.jpg");
-        Mat g_src = Imgcodecs.imread("D:\\y.jpg");
-
-        int result_rows = g_src.rows() - g_tem.rows() + 1;
-        int result_cols = g_src.cols() - g_tem.cols() + 1;
-        Mat g_result = new Mat(result_rows, result_cols, CvType.CV_32FC1);
-        Imgproc.matchTemplate(g_src, g_tem, g_result, Imgproc.TM_CCORR_NORMED); // 归一化平方差匹配法
         // Imgproc.matchTemplate(g_src, g_tem, g_result,
         // Imgproc.TM_CCOEFF_NORMED); // 归一化相关系数匹配法
 
@@ -415,18 +400,7 @@ public class 自动化出单2C extends TestBase {
 
         // Imgproc.matchTemplate(g_src, g_tem,g_result,Imgproc.TM_CCORR_NORMED);
         // // 归一化相关匹配法
-        Core.normalize(g_result, g_result, 0, 1, Core.NORM_MINMAX, -1, new Mat());
-        org.opencv.core.Point matchLocation = new org.opencv.core.Point();
-        Core.MinMaxLocResult mmlr = Core.minMaxLoc(g_result);
 
-        matchLocation = mmlr.maxLoc; // 此处使用maxLoc还是minLoc取决于使用的匹配算法
-        point.add(matchLocation.x);
-        point.add(matchLocation.y);
-        Imgproc.rectangle(g_src, matchLocation,
-                new org.opencv.core.Point(matchLocation.x + g_tem.cols(), matchLocation.y + g_tem.rows()),
-                new Scalar(0, 0, 0, 0));
-
-        Imgcodecs.imwrite("D:\\match.jpg", g_src);
         return point;
     }
 }
